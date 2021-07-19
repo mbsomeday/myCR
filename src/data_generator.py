@@ -150,12 +150,28 @@ class TrainGenerator(Generator):
 		return [x, y, np.ones(self.batch_size)*int(self.timesteps-2), np.ones(self.batch_size)*self.label_len], y
 
 
+class Val_Generator(Generator):
+	def _generate_data(self, batch_json_names):
+		x = np.zeros((self.batch_size, self.img_width, self.img_height, self.channels))
+		y = []
+
+		for i, fn in enumerate(batch_json_names):
+			img, word = self.load_image_and_annotation(fn)
+			img = self.preprocess(img)
+			x[i] = img
+			y.append(word)
+		return x, y
+
 
 if __name__ == '__main__':
-	g = TrainGenerator(r'../mchar_train', r'../mchar_train.json', 1, cfg.height, cfg.width, cfg.nb_channels, 10, 11, "0123456789-", shuffle=False)
+	g = Val_Generator(r'../../mchar_val', r'../../mchar_val.json', cfg.batch_size, cfg.height, cfg.width, cfg.nb_channels, 10, 11, "0123456789-", shuffle=False)
 	# batch_json_names = ['000000.png', '000001.png', '000002.png', '000003.png', '000004.png']
-	# X, y = g[0]
-	a = g[1]
+	X, y = g[0]
+	print(y)
+	# for i in range(2):
+		# cv2.imshow("img", X[i])
+		# cv2.waitKey(0)
+
 
 
 

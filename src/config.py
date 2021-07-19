@@ -7,7 +7,7 @@ parser.add_argument('--width', type=int, default=200)
 parser.add_argument('--height', type=int, default=32)
 parser.add_argument('--nb_channels', type=int, default=3)
 parser.add_argument('--label_len', type=int, default=7)   # 最长的标签长度
-parser.add_argument('--batch_size', type=int, default=32)
+parser.add_argument('--batch_size', type=int, default=2)
 parser.add_argument('--model', type=str, default='CRNN_STN', choices=['CRNN_CTN', 'CRNN'])
 parser.add_argument('--conv_filter_size', type=int, nargs=7, default=[64, 128, 256, 256, 512, 512, 512])
 parser.add_argument('--lstm_nb_units', type=int, nargs=2, default=[128, 128])
