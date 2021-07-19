@@ -8,6 +8,9 @@ import abc
 
 
 class Generator(keras.utils.Sequence):
+
+	__metaclass__ = abc.ABCMeta
+
 	def __init__(self, dataset, json_file_path, batch_size, img_height, img_width, channels, timesteps, label_len,
 	             characters, shuffle=True):
 		self.dataset = dataset   # 图片所在文件夹
