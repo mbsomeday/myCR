@@ -167,13 +167,14 @@ class Val_Generator(Generator):
 
 
 if __name__ == '__main__':
-	g = Val_Generator(r'../../mchar_val', r'../../mchar_val.json', cfg.batch_size, cfg.height, cfg.width, cfg.nb_channels, 10, 11, "0123456789-", shuffle=False)
-	# batch_json_names = ['000000.png', '000001.png', '000002.png', '000003.png', '000004.png']
+	h_valSet_path = r'../../tfKeras/tianchi/mchar_val'
+	h_valJson = r'../../tfKeras/tianchi/mchar_val.json'
+	g = Val_Generator(h_valSet_path, h_valJson, cfg.batch_size, cfg.height, cfg.width, cfg.nb_channels, 10, 11, "0123456789-", shuffle=False)
 	X, y = g[0]
 	print(y)
 	# for i in range(2):
-		# cv2.imshow("img", X[i])
-		# cv2.waitKey(0)
+	# 	cv2.imshow("img", X[i])
+	# 	cv2.waitKey(0)
 
 
 
