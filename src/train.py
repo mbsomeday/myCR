@@ -18,13 +18,14 @@ def get_models():
     return CRNN(cfg)
 
 
-def get_callbacks(training_model, prediction_model):
+def get_callbacks(training_model, prediction_model, val_generator):
     prediction_model_checkpoint = PredictionModelCheckpoint(cfg.prediction_model_cp_filename, prediction_model,
                                                             monitor='loss',
                                                             save_best_only=cfg.save_best_only, mode='min')
     le_reducer = keras.callbacks.ReduceLROnPlateau(factor=cfg.lr_reduction_factor, patience=3, verbose=1,
                                                    min_lr=0.00001)
-    return [prediction_model_checkpoint, le_reducer]
+    evaluator = Evaluator(prediction_model, val_generator, cfg.label_len, cfg.characters, cfg.optimizer)
+    return [prediction_model_checkpoint, le_reducer, evaluator]
 
 
 def get_generator():
@@ -70,7 +71,10 @@ if __name__ == '__main__':
     # res = e.evaluate()
     
     opt = get_optimizer()
-    callbacks = get_callbacks(training_model, prediction_model)
+    callbacks = get_callbacks(training_model, prediction_model, val_generator)
     training_model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=opt)
-    training_model.fit_generator(train_generator, steps_per_epoch=10, epochs=5, verbose=1, callbacks=callbacks)
+    training_model.fit_generator(train_generator,
+                                 # steps_per_epoch=int(30000/train_generator.batch_size),
+                                 steps_per_epoch=20,
+                                 epochs=2, verbose=1, callbacks=callbacks)
     # training_model.summary()

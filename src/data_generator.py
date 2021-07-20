@@ -90,7 +90,7 @@ class Generator(keras.utils.Sequence):
 			# img.shape: [height, width]
 			if curImg.shape[0] != self.img_height:
 				# resize: [width, height]
-				curImg = cv2.resize(curImg, dsize=[int(curImg.shape[1]*self.img_height/curImg.shape[0]), self.img_height])
+				curImg = cv2.resize(curImg, dsize=[int(curImg.shape[1]*self.img_height/curImg.shape[0]), self.img_height], interpolation=cv2.INTER_CUBIC)
 
 			res_img.append(curImg)
 

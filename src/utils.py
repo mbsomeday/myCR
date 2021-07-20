@@ -3,6 +3,7 @@ import numpy as np
 from tensorflow import keras
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback
 import tensorflow.keras.backend as K
+import cv2
 
 from model import CRNN
 from config import cfg
@@ -111,21 +112,23 @@ class Evaluator(Callback):
         correct_predictions = 0
         correct_char_predictions = 0
 
-        # todo 这里改成random选取下标
+        # todo 这里改成random选取下标，随便挑选一个batch
         x_val, y_val = self.val_generator[0]
+        # cv2.imshow("img", x_val[0])
+        # cv2.waitKey(0)
 
-        print("real label:", y_val)
+        # print("real label:", y_val)
 
         y_pred = self.prediction_model.predict(x_val)
-        print("predict:", y_pred.shape)
+        # print("predict:", y_pred.shape)
 
         shape = y_pred[:, 2:, :].shape
         ctc_decode = K.ctc_decode(y_pred[:, 2:, :], input_length=np.ones(shape[0]) * shape[1])[0][0]
         ctc_out = K.get_value(ctc_decode)[:, :self.label_len]
 
-        print("val_generator.batch_size：", self.val_generator.batch_size)
+        # print("val_generator.batch_size：", self.val_generator.batch_size)
         for i in range(self.val_generator.batch_size):
-            print("***", ctc_out[i], "***")
+            # print("***", ctc_out[i], "***")
             result_num = ''.join([self.characters[c] for c in ctc_out[i]])
             result_num = result_num.replace("-", '')
             if result_num == y_val[i]:
