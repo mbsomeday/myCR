@@ -3,6 +3,17 @@ import multiprocessing
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--h_valSet', type=str, default=r'../../tfKeras/tianchi/mchar_val')
+parser.add_argument('--h_valJson', type=str, default=r'../../tfKeras/tianchi/mchar_val.json')
+parser.add_argument('--h_trainSet', type=str, default=r'../../tfKeras/tianchi/mchar_train')
+parser.add_argument('--h_trainJson', type=str, default=r'../../tfKeras/tianchi/mchar_train.json')
+
+parser.add_argument('--o_valSet', type=str, default=r'../../mchar_val')
+parser.add_argument('--o_valJson', type=str, default=r'../../mchar_val.json')
+parser.add_argument('--o_trainSet', type=str, default=r'../../mchar_train')
+parser.add_argument('--o_trainJson', type=str, default=r'../../mchar_train.json')
+
+
 parser.add_argument('--width', type=int, default=200)
 parser.add_argument('--height', type=int, default=32)
 parser.add_argument('--nb_channels', type=int, default=3)
