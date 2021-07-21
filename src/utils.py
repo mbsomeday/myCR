@@ -20,6 +20,7 @@ class MultiGPUModelCheckpoint(ModelCheckpoint):
         self.model = self.alternate_model
         super().on_epoch_end(epoch, logs)
         self.model = model_before
+	    
 
 
 class MyCallback(Callback):
