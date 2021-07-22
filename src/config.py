@@ -1,6 +1,7 @@
 import argparse
 import multiprocessing
 
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--h_valSet', type=str, default=r'../../tfKeras/tianchi/mchar_val')
