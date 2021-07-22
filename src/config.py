@@ -6,8 +6,12 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--h_valSet', type=str, default=r'../../tfKeras/tianchi/mchar_val')
 parser.add_argument('--h_valJson', type=str, default=r'../../tfKeras/tianchi/mchar_val.json')
+parser.add_argument('--h_valWasted', type=str, default=r'../../tfKeras/tianchi/val_wasted')
+
 parser.add_argument('--h_trainSet', type=str, default=r'../../tfKeras/tianchi/mchar_train')
 parser.add_argument('--h_trainJson', type=str, default=r'../../tfKeras/tianchi/mchar_train.json')
+parser.add_argument('--h_trainWasted', type=str, default=r'../../tfKeras/tianchi/train_wasted')
+
 
 parser.add_argument('--o_valSet', type=str, default=r'../../mchar_val')
 parser.add_argument('--o_valJson', type=str, default=r'../../mchar_val.json')
