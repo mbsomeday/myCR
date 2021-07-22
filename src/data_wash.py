@@ -45,6 +45,8 @@ def save_json_info(name, json_info, purified_json_path):
 
 if __name__ == '__main__':
 	pass
+
+
     # data_wash(cfg.h_trainSet, cfg.h_trainJson, r'./train_purified.json', cfg.h_trainWasted)
     # data_wash(cfg.h_valSet, cfg.h_valJson, r'./val_purified.json', cfg.h_valWasted)
 
