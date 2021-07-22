@@ -19,13 +19,19 @@ def get_models():
 
 
 def get_callbacks(training_model, prediction_model, val_generator):
-    prediction_model_checkpoint = PredictionModelCheckpoint(cfg.prediction_model_cp_filename, prediction_model,
+    training_model_checkpoint = MultiGPUModelCheckpoint(os.path.join(cfg.training_model_dir, cfg.training_model_cp),
+                                                        training_model,
+                                                        save_best_only=True,
+                                                        monitor='loss',
+                                                        mode='min')
+    prediction_model_checkpoint = PredictionModelCheckpoint(os.path.join(cfg.prediction_model_dir, cfg.prediction_model_cp),
+                                                            prediction_model,
                                                             monitor='loss',
                                                             save_best_only=cfg.save_best_only, mode='min')
     le_reducer = keras.callbacks.ReduceLROnPlateau(factor=cfg.lr_reduction_factor, patience=3, verbose=1,
-                                                   min_lr=0.00001)
+                                                   min_lr=0.0000001)
     evaluator = Evaluator(prediction_model, val_generator, cfg.label_len, cfg.characters, cfg.optimizer)
-    return [prediction_model_checkpoint, le_reducer, evaluator]
+    return [training_model_checkpoint, prediction_model_checkpoint, le_reducer, evaluator]
 
 
 def get_generator():
@@ -37,7 +43,9 @@ def get_generator():
                                      channels=cfg.nb_channels,
                                      timesteps=cfg.timesteps,
                                      label_len=cfg.label_len,
-                                     characters=cfg.characters)
+                                     characters=cfg.characters,
+                                     shuffle=False
+                                     )
     val_generator = Val_Generator(dataset=cfg.o_valSet,
                                   json_file_path=cfg.o_valJson,
                                   batch_size=cfg.batch_size,
@@ -46,7 +54,9 @@ def get_generator():
                                   channels=cfg.nb_channels,
                                   timesteps=cfg.timesteps,
                                   label_len=cfg.label_len,
-                                  characters=cfg.characters)
+                                  characters=cfg.characters,
+                                  shuffle=False
+                                  )
     return train_generator, val_generator
 
 
@@ -62,19 +72,26 @@ if __name__ == '__main__':
 
     training_model, prediction_model = get_models()
     train_generator, val_generator = get_generator()
-    # prediction_model, val_generator, label_len, characters, optimizer, period = 2000):
-    # e = Evaluator(prediction_model=prediction_model,
-    #               val_generator=val_generator,
-    #               label_len=cfg.label_len,
-    #               characters=cfg.characters,
-    #               optimizer=cfg.optimizer)
-    # res = e.evaluate()
-    
+    # train_generator.data_wash()
+    # l = int(train_generator.nb_samples/train_generator.batch_size)
+    # x, y = train_generator[7]
+    # train_generator.load_image_and_annotation()
+    # for i in range(l):  # 251
+    #     print(i)
+    #     x, y = train_generator[i]
+
+
     opt = get_optimizer()
     callbacks = get_callbacks(training_model, prediction_model, val_generator)
     training_model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=opt)
     training_model.fit_generator(train_generator,
-                                 # steps_per_epoch=int(30000/train_generator.batch_size),
-                                 steps_per_epoch=20,
-                                 epochs=2, verbose=1, callbacks=callbacks)
-    # training_model.summary()
+                                 steps_per_epoch=int(train_generator.nb_samples/train_generator.batch_size),
+                                 epochs=1, verbose=1, callbacks=callbacks)
+    
+    # img = cv2.imread("./a")
+    # print(type(img))
+    # if img is None:
+    #     print("是None")
+    # else:
+    #     print("else")
+    

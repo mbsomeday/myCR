@@ -10,6 +10,7 @@ from config import cfg
 from data_generator import TrainGenerator, Val_Generator
 
 
+# 保存训练模型
 class MultiGPUModelCheckpoint(ModelCheckpoint):
     def __init__(self, filepath, alternate_mode, **kwargs):
         self.alternate_model = alternate_mode
@@ -31,8 +32,9 @@ class MyCallback(Callback):
         self.model.save("my_model")
 
 
+# 保存测试模型
 class PredictionModelCheckpoint(Callback):
-    def __init__(self, filepath, prediction_model, monitor='loss', save_best_only=False, mode='min', period=1,
+    def __init__(self, filepath, prediction_model, monitor='loss', save_best_only=True, mode='min', period=1,
                  save_weights_only=False, verbose=False):
         self.filepath = filepath
         self.prediction_model = prediction_model
@@ -63,7 +65,8 @@ class PredictionModelCheckpoint(Callback):
         if self.epochs_since_last_save >= self.period:
             self.epochs_since_last_save = 0
             filepath = self.filepath.format(epoch=epoch + 1, **logs)
-            if self.save_best_only:
+            print("测试模型保存的filepath：", filepath)
+            if self.save_best_only:   # 只保存目前为止最好的模型
                 current = logs.get(self.monitor)
                 if self.monitor_op(current, self.best):
                     print('\nEpoch %05d: %s improved from %0.5f to %0.5f, saving model to %s'
@@ -72,10 +75,16 @@ class PredictionModelCheckpoint(Callback):
                         self.prediction_model.save_weights(filepath, overwrite=True)
                     else:
                         self.prediction_model.save(filepath, overwrite=True)
+            else:   # 每次epoch都保存
+                if self.save_weights_only:
+                    self.prediction_model.save_weights(filepath, overwrite=True)
+                else:
+                    self.prediction_model.save(filepath, overwrite=True)
 
 
+# 每period个batch、每个epoch都测一次模型性能
 class Evaluator(Callback):
-    def __init__(self, prediction_model, val_generator, label_len, characters, optimizer, period=1):
+    def __init__(self, prediction_model, val_generator, label_len, characters, optimizer, period=10):
         self.prediction_model = prediction_model
         self.period = period
         self.val_generator = val_generator
@@ -108,12 +117,13 @@ class Evaluator(Callback):
         else:
             print("Learning rate: %.8f" % K.eval(self.model.optimizer.lr))
 
+
     def evaluate(self):
         correct_predictions = 0
         correct_char_predictions = 0
 
-        # todo 这里改成random选取下标，随便挑选一个batch
-        x_val, y_val = self.val_generator[0]
+        x_val, y_val = self.val_generator[np.random.randint(0, int(self.val_generator.nb_samples / self.val_generator.batch_size))]
+        
         # cv2.imshow("img", x_val[0])
         # cv2.waitKey(0)
 
