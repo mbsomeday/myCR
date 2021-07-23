@@ -44,7 +44,7 @@ def get_generator():
                                      timesteps=cfg.timesteps,
                                      label_len=cfg.label_len,
                                      characters=cfg.characters,
-                                     shuffle=False
+                                     # shuffle=False
                                      )
     val_generator = Val_Generator(dataset=cfg.o_valSet,
                                   json_file_path=cfg.o_valJson,
@@ -55,7 +55,7 @@ def get_generator():
                                   timesteps=cfg.timesteps,
                                   label_len=cfg.label_len,
                                   characters=cfg.characters,
-                                  shuffle=False
+                                  # shuffle=False
                                   )
     return train_generator, val_generator
 

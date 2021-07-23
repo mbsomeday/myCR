@@ -13,10 +13,16 @@ parser.add_argument('--h_trainJson', type=str, default=r'../../tfKeras/tianchi/m
 parser.add_argument('--h_trainWasted', type=str, default=r'../../tfKeras/tianchi/train_wasted')
 
 
-parser.add_argument('--o_valSet', type=str, default=r'../../mchar_val')
-parser.add_argument('--o_valJson', type=str, default=r'../../mchar_val.json')
 parser.add_argument('--o_trainSet', type=str, default=r'../../mchar_train')
-parser.add_argument('--o_trainJson', type=str, default=r'../../mchar_train.json')
+# parser.add_argument('--o_trainJson', type=str, default=r'../../mchar_train.json')     没有数据清洗过的json
+parser.add_argument('--o_trainJson', type=str, default=r'./o_train_purified.json')     # 数据清洗过的json
+parser.add_argument('--o_trainWasted', type=str, default=r'../../train_wasted')
+
+parser.add_argument('--o_valSet', type=str, default=r'../../mchar_val')
+# parser.add_argument('--o_valJson', type=str, default=r'../../mchar_val.json')
+parser.add_argument('--o_valJson', type=str, default=r'./o_val_purified.json')     # 数据清洗过的json
+parser.add_argument('--o_valWasted', type=str, default=r'../../val_wasted')
+
 
 # 模型保存dir参数
 parser.add_argument('--training_model_dir', type=str, default=r'./training_model')
